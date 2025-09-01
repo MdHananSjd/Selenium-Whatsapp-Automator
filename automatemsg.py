@@ -8,18 +8,25 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 
-def create_csv_and_return_df(filename="queries.csv"):
-    # Define columns
+def create_csv_and_return_df():
+    filename = "messages.csv"   
     columns = ["Number", "Message"]
-    
-    # Create CSV file if it doesn't exist
+    n = int(input("How many entries do you want to add? "))
+
+    data = []
+    for i in range(n):
+        number = input(f"Enter number {i+1}: ")
+        message = input(f"Enter message {i+1}: ")
+        data.append([number, message])
+
+    # Write to CSV 
     with open(filename, mode="w", newline="") as file:
         writer = csv.writer(file)
         writer.writerow(columns)
-    
-    # Return a pandas DataFrame from the created CSV
-    return pd.read_csv(filename)
+        writer.writerows(data)
 
+    # Return pandas DataFrame
+    return pd.read_csv(filename)
 
 # --- Load Contacts ---
 print('''
@@ -30,22 +37,22 @@ if no, type "0"
 choice = int(input("Enter choice: "))
 
 if choice == 1:
-    contacts = pd.read_csv("contacts.csv")  # must have: number,message
+    contacts = pd.read_csv("messages.csv")  # must have: number,message
 else:
     contacts = create_csv_and_return_df()
 
+options = Options() #Webdriver options class
 
-
-options = Options()
-options.add_argument("user-data-dir=/Users/mhs/Library/Application Support/Google/Chrome/Default")  
+#change this path to your chrome profile (this is mine)
+options.add_argument("user-data-dir=/Users/mhs/Library/Application Support/Google/Chrome/Default")
 
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-# Open WhatsApp Web
+# Opening WhatsApp Web
 driver.get("https://web.whatsapp.com")
 print("Scan QR code if not already logged in...")
-time.sleep(15)  # wait for WhatsApp Web to load
+time.sleep(15)  # delay for WhatsApp Web to load
 
 
 for i, row in contacts.iterrows():
@@ -54,7 +61,7 @@ for i, row in contacts.iterrows():
 
     url = f"https://web.whatsapp.com/send?phone={number}&text={message}"
     driver.get(url)
-    time.sleep(10)  # wait for chat to load
+    time.sleep(10)  # delay for chat to load
 
     try:
         # Focus the message box
