@@ -35,7 +35,7 @@ if no, type "0"
 choice = int(input("Enter choice: "))
 
 if choice == 1:
-    contacts = pd.read_csv("messages.csv")  # must have: number,message
+    contacts = pd.read_csv("messages.csv")
 else:
     contacts = create_csv()
 
