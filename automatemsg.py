@@ -1,4 +1,5 @@
 import time
+import csv
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -7,8 +8,32 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 
+def create_csv_and_return_df(filename="queries.csv"):
+    # Define columns
+    columns = ["Number", "Message"]
+    
+    # Create CSV file if it doesn't exist
+    with open(filename, mode="w", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow(columns)
+    
+    # Return a pandas DataFrame from the created CSV
+    return pd.read_csv(filename)
+
+
 # --- Load Contacts ---
-contacts = pd.read_csv("contacts.csv")  # must have: number,message
+print('''
+Do you have the csv file ready to send?
+if yes, type "1"
+if no, type "0"
+''')
+choice = int(input("Enter choice: "))
+
+if choice == 1:
+    contacts = pd.read_csv("contacts.csv")  # must have: number,message
+else:
+    contacts = create_csv_and_return_df()
+
 
 
 options = Options()
