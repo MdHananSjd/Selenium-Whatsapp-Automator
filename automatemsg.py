@@ -8,9 +8,10 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 
-def create_csv_and_return_df():
+#CSV file creation option
+def create_csv():
     filename = "messages.csv"   
-    columns = ["Number", "Message"]
+    columns = ["number", "message"]
     n = int(input("How many entries do you want to add? "))
 
     data = []
@@ -19,16 +20,13 @@ def create_csv_and_return_df():
         message = input(f"Enter message {i+1}: ")
         data.append([number, message])
 
-    # Write to CSV 
     with open(filename, mode="w", newline="") as file:
         writer = csv.writer(file)
         writer.writerow(columns)
         writer.writerows(data)
 
-    # Return pandas DataFrame
     return pd.read_csv(filename)
 
-# --- Load Contacts ---
 print('''
 Do you have the csv file ready to send?
 if yes, type "1"
@@ -39,7 +37,7 @@ choice = int(input("Enter choice: "))
 if choice == 1:
     contacts = pd.read_csv("messages.csv")  # must have: number,message
 else:
-    contacts = create_csv_and_return_df()
+    contacts = create_csv()
 
 options = Options() #Webdriver options class
 
